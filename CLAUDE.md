@@ -6,9 +6,10 @@ Google Apps Script project generating monthly planner and calendar templates in 
 
 ## File map
 
-- `scripts/monthly_planner.gs` — all template generators
+- `scripts/monthly_planner.gs` — monthly planner template
   - `createMonthlyPlanner()` — entry point: prompts for month/year, calls `buildPlanner()`
   - `buildPlanner(month, year)` — builds a color-coded monthly planner with goals section
+- `scripts/blank_calendar.gs` — blank printable calendar template
   - `createBlankCalendar()` — builds a grayscale blank calendar for printing (no prompts)
 - `SHOWCASE.md` — ASCII art previews of each template's output with color palettes and legends
 
