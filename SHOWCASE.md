@@ -2,9 +2,9 @@
 
 ASCII previews of each template so you can see the layout before running anything.
 
-## Monthly Planner (`createMonthlyPlanner()`)
+## Monthly Planner — `monthly_planner.gs`
 
-Color-coded monthly planner with goals section. Prompts for month/year at runtime.
+Color-coded monthly planner with goals section. Run `createMonthlyPlanner()` — it prompts for month/year.
 Example below uses **March 2026** (starts on Sunday, so the first weekday cells are empty).
 Weekend columns (Sat/Sun) shown with `:` borders to indicate distinct background.
 
@@ -76,9 +76,9 @@ Weekend columns (Sat/Sun) shown with `:` borders to indicate distinct background
 
 ---
 
-## Blank Calendar (`createBlankCalendar()`)
+## Blank Calendar — `blank_calendar.gs`
 
-Light grayscale calendar for printing. No prompts — runs immediately.
+Light grayscale calendar for printing. Run `createBlankCalendar()` — no prompts, runs immediately.
 Always renders 6 weeks so any month fits. Content rows are 72px (shorter than planner)
 to fit the calendar grid on a single A4 landscape page. Weekend columns shown with `.` borders.
 
