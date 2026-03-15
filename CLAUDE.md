@@ -15,7 +15,7 @@ Google Apps Script project generating monthly planner and calendar templates in 
 ## Architecture patterns
 
 - Each template has an **entry-point function** (handles UI/prompts) and a **builder function** (constructs the sheet)
-- Calendar grid uses **2 rows per week**: a short day-number row (22px) + a taller content row (96px)
+- Calendar grid uses **2 rows per week**: a short day-number row (22px) + a taller content row (96px for planner, 72px for blank calendar — reduced to fit A4 landscape)
 - Color palettes are defined as local variables at the top of each builder
 - Column width: 156px across all 7 day columns
 

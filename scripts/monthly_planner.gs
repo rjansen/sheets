@@ -207,7 +207,7 @@ function createBlankCalendar() {
   var numCols = 7;
   var numWeeks = 6; // 6 rows covers any month
   var dayNumberHeight = 22;
-  var cellHeight = 96;
+  var cellHeight = 72;
 
   // -- Light grayscale palette --
   var headerBg = "#e0e0e0";
@@ -224,7 +224,7 @@ function createBlankCalendar() {
     .setHorizontalAlignment("center")
     .setVerticalAlignment("middle")
     .setBackground(headerBg);
-  sheet.setRowHeight(1, 50);
+  sheet.setRowHeight(1, 80);
   sheet.getRange(1, 1, 1, numCols)
     .setBorder(true, true, true, true, false, false, borderColor, SpreadsheetApp.BorderStyle.SOLID);
 
