@@ -10,6 +10,7 @@ Google Apps Script project generating monthly planner and calendar templates in 
   - `createMonthlyPlanner()` — entry point: prompts for month/year, calls `buildPlanner()`
   - `buildPlanner(month, year)` — builds a color-coded monthly planner with goals section
   - `createBlankCalendar()` — builds a grayscale blank calendar for printing (no prompts)
+- `SHOWCASE.md` — ASCII art previews of each template's output with color palettes and legends
 
 ## Architecture patterns
 
@@ -24,6 +25,14 @@ Google Apps Script project generating monthly planner and calendar templates in 
 - `sheet.clear()` alone does NOT remove checkboxes — must also call `clearFormats()` and `clearDataValidations()` on re-run
 - Day-of-week conversion: JS `getDay()` returns 0=Sunday; code converts to Monday=0 with `(getDay() + 6) % 7`
 - The blank calendar uses 6 weeks (fixed) to cover any month; the planner calculates exact weeks needed
+
+## Keeping SHOWCASE.md up to date
+
+When a template's layout, color palette, grid structure, or goals section changes, update `SHOWCASE.md` to match. Each template has its own ASCII art block — edit only the affected block. Ensure:
+- ASCII art rows stay 92 chars wide
+- Weekend border characters (`:` for planner, `.` for blank calendar) are preserved
+- Color palette tables reflect the actual hex values in the code
+- Legends match the symbols used in the art
 
 ## Testing
 

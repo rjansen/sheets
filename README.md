@@ -60,6 +60,10 @@ Generates a **grayscale blank calendar** designed for printing and hand-writing.
 
 Goals rows use alternating backgrounds (`#f5f5f5` / `#fafafa`) for readability.
 
+## Visual preview
+
+See [SHOWCASE.md](SHOWCASE.md) for ASCII art previews of each template's output, including layout structure, color palettes, and legend.
+
 ## Sheet layout reference
 
 Both functions share the same grid structure:
