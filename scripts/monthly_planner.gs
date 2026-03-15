@@ -39,13 +39,16 @@ function buildPlanner(month, year) {
   var sheet = ss.getSheetByName(sheetName);
   if (sheet) {
     sheet.clear();
+    sheet.clearFormats();
+    sheet.getDataRange().clearDataValidations();
   } else {
     sheet = ss.insertSheet(sheetName);
   }
 
   var dayHeaders = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
   var numCols = 7;
-  var cellHeight = 80;
+  var dayNumberHeight = 22;
+  var cellHeight = 96; // ~20% larger than original 80
 
   // -- Colors --
   var headerBg = "#4a86c8";
@@ -90,37 +93,52 @@ function buildPlanner(month, year) {
   var totalCells = startDow + daysInMonth;
   var numWeeks = Math.ceil(totalCells / 7);
 
-  // -- Fill calendar cells --
+  // -- Fill calendar cells (2 rows per week: day number + content) --
   var startRow = 3;
   var day = 1;
   for (var week = 0; week < numWeeks; week++) {
-    var row = startRow + week;
-    sheet.setRowHeight(row, cellHeight);
+    var numberRow = startRow + week * 2;
+    var contentRow = numberRow + 1;
+    sheet.setRowHeight(numberRow, dayNumberHeight);
+    sheet.setRowHeight(contentRow, cellHeight);
+
     for (var col = 0; col < numCols; col++) {
       var cellIndex = week * 7 + col;
-      var cell = sheet.getRange(row, col + 1);
+      var numberCell = sheet.getRange(numberRow, col + 1);
+      var contentCell = sheet.getRange(contentRow, col + 1);
+      var isWeekend = (col === 5 || col === 6);
+      var bg = isWeekend ? weekendBg : dayNumberBg;
 
       if (cellIndex >= startDow && day <= daysInMonth) {
-        cell.setValue(day);
-        cell.setVerticalAlignment("top");
-        cell.setFontSize(10);
-        cell.setFontWeight("bold");
-        cell.setBackground(dayNumberBg);
-        // Weekend highlight (Saturday=5, Sunday=6)
-        if (col === 5 || col === 6) {
-          cell.setBackground(weekendBg);
-        }
+        // Day number row
+        numberCell.setValue(day);
+        numberCell.setVerticalAlignment("middle");
+        numberCell.setHorizontalAlignment("center");
+        numberCell.setFontSize(10);
+        numberCell.setFontWeight("bold");
+        numberCell.setBackground(bg);
+
+        // Content row for notes
+        contentCell.setVerticalAlignment("top");
+        contentCell.setFontSize(9);
+        contentCell.setBackground(bg);
+        contentCell.setWrap(true);
+
         day++;
       } else {
-        cell.setBackground("#f5f5f5");
+        var emptyBg = isWeekend ? weekendBg : "#f5f5f5";
+        numberCell.setBackground(emptyBg);
+        contentCell.setBackground(emptyBg);
       }
 
-      cell.setBorder(true, true, true, true, false, false, borderColor, SpreadsheetApp.BorderStyle.SOLID);
+      // Borders: top+sides on number row, bottom+sides on content row
+      numberCell.setBorder(true, true, false, true, false, false, borderColor, SpreadsheetApp.BorderStyle.SOLID);
+      contentCell.setBorder(false, true, true, true, false, false, borderColor, SpreadsheetApp.BorderStyle.SOLID);
     }
   }
 
   // -- Goals section --
-  var goalsStartRow = startRow + numWeeks + 1;
+  var goalsStartRow = startRow + numWeeks * 2 + 1;
   var goalsRows = 6;
 
   // Goals title
@@ -160,7 +178,7 @@ function buildPlanner(month, year) {
 
   // -- Column widths --
   for (var col = 1; col <= numCols; col++) {
-    sheet.setColumnWidth(col, 130);
+    sheet.setColumnWidth(col, 156);
   }
 
   // Activate the new sheet
