@@ -8,9 +8,11 @@ Color-coded monthly planner with goals section. Run `createMonthlyPlanner()` —
 Example below uses **March 2026** (starts on Sunday, so the first weekday cells are empty).
 Weekend columns (Sat/Sun) shown with `:` borders to indicate distinct background.
 
-Content cells contain **live formulas** that pull records from a "Payments" sheet (if it exists).
-Each cell filters by `due_date` matching the cell's day + title month/year, displaying `icon label - value`.
-A ✅ or ❌ prefix indicates whether `payment_date` (column D) is filled or empty.
+Content cells contain **live formulas** that pull the precomputed label from column B of the
+"Payments" sheet (if it exists), filtered by `due_date` (column D) matching the cell's day +
+title month/year. Column B is an ARRAYFORMULA that builds `✅/❌ value - description` —
+a ✅ prefix means `payment_date` (column E) is filled, ❌ means empty.
+Values are formatted as decimals with 2 digits. Content is clipped (no word wrap).
 Multiple items per day stack vertically via `CHAR(10)` newlines.
 
 ```
@@ -24,22 +26,21 @@ Multiple items per day stack vertically via `CHAR(10)` newlines.
 |            |            |            |            |            :            :            :
 +------------+------------+------------+------------+------------+------------+------------+
 |     3      |     4      |     5      |     6      |     7      :     8      :     9      :
-|            |✅ Rent -   |❌ Electric |            |            :            :            :
-|            |1200        |- 180       |            |            :            :            :
+|            |✅ 1200.00 -|❌ 180.00 - |            |            :            :            :
+|            |            |            |            |            :            :            :
 +------------+------------+------------+------------+------------+------------+------------+
 |    10      |    11      |    12      |    13      |    14      :    15      :    16      :
-|✅ Internet |            |            |            |            :❌ Gym -    :            :
-|- 89.90     |            |            |            |            :49.90       :            :
-|            |            |            |            |            :✅ Spotify -:            :
-|            |            |            |            |            :19          :            :
+|✅ 89.90 - |            |            |            |            :❌ 49.90 - :            :
+|            |            |            |            |            :✅ 19.00 - :            :
+|            |            |            |            |            :            :            :
 +------------+------------+------------+------------+------------+------------+------------+
 |    17      |    18      |    19      |    20      |    21      :    22      :    23      :
-|            |            |            |❌ Insurance|            :            :            :
-|            |            |            |- 450       |            :            :            :
+|            |            |            |❌ 450.00 -|            :            :            :
+|            |            |            |            |            :            :            :
 +------------+------------+------------+------------+------------+------------+------------+
 |    24      |    25      |    26      |    27      |    28      :    29      :    30      :
-|            |            |            |            |✅ Phone -  :            :            :
-|            |            |            |            |65          :            :            :
+|            |            |            |            |✅ 65.00 - :            :            :
+|            |            |            |            |            :            :            :
 +------------+------------+------------+------------+------------+------------+------------+
 |    31      |            |            |            |            :            :            :
 |            |            |            |            |            :            :            :
@@ -48,19 +49,19 @@ Multiple items per day stack vertically via `CHAR(10)` newlines.
 
 +------------+------------+------------+------------+------------+------------+------------+
 |                                      Monthly Goals                                       |
-+------------+-----------------------------------------------------------------------------+
-|    [x]     | Goal description text here...                                               |
-+------------+-----------------------------------------------------------------------------+
-|    [ ]     | ...                                                                         |
-+------------+-----------------------------------------------------------------------------+
-|    [ ]     | ...                                                                         |
-+------------+-----------------------------------------------------------------------------+
-|    [ ]     | ...                                                                         |
-+------------+-----------------------------------------------------------------------------+
-|    [ ]     | ...                                                                         |
-+------------+-----------------------------------------------------------------------------+
-|    [ ]     | ...                                                                         |
-+------------+-----------------------------------------------------------------------------+
++------------+------------------------+----------------------------------------------------+
+|    [x]     | Goal label             | Goal description text here...                      |
++------------+------------------------+----------------------------------------------------+
+|    [ ]     | ...                    | ...                                                |
++------------+------------------------+----------------------------------------------------+
+|    [ ]     | ...                    | ...                                                |
++------------+------------------------+----------------------------------------------------+
+|    [ ]     | ...                    | ...                                                |
++------------+------------------------+----------------------------------------------------+
+|    [ ]     | ...                    | ...                                                |
++------------+------------------------+----------------------------------------------------+
+|    [ ]     | ...                    | ...                                                |
++------------+------------------------+----------------------------------------------------+
 ```
 
 **Legend:**
@@ -69,9 +70,9 @@ Multiple items per day stack vertically via `CHAR(10)` newlines.
 |--------|---------|
 | `\|  ...  \|` | Weekday cells |
 | `:  ...  :` | Weekend cells |
-| `✅ Rent - 1200` | Paid — `payment_date` is filled |
-| `❌ Electric - 180` | Unpaid — `payment_date` is empty |
-| `[x]` / `[ ]` | Interactive checkbox in column 1, text area merged across columns 2–7 |
+| `✅ 1200.00 - Rent` | Paid — `payment_date` (column E) is filled |
+| `❌ 180.00 - Electric` | Unpaid — `payment_date` (column E) is empty |
+| `[x]` / `[ ]` | Interactive checkbox (col 1), label (cols 2–3), description (cols 4–7) |
 
 **Color palette:**
 
