@@ -64,7 +64,8 @@ function buildPlanner(month, year) {
   // -- Title row --
   var title = monthNames[month - 1] + " " + year;
   sheet.getRange(1, 1, 1, numCols).merge()
-    .setValue(title)
+    .setValue(new Date(year, month - 1, 1))
+    .setNumberFormat('MMMM yyyy')
     .setFontSize(20)
     .setFontWeight("bold")
     .setHorizontalAlignment("center")
@@ -120,11 +121,15 @@ function buildPlanner(month, year) {
         numberCell.setFontWeight("bold");
         numberCell.setBackground(bg);
 
-        // Content row for notes
+        // Content row — live formula pulls from Payments sheet
         contentCell.setVerticalAlignment("top");
         contentCell.setFontSize(9);
         contentCell.setBackground(bg);
         contentCell.setWrap(true);
+
+        var dayRef = numberCell.getA1Notation();
+        var formula = '=IFERROR(TEXTJOIN(CHAR(10),TRUE,FILTER(Payments!B$2:B&" - "&Payments!E$2:E,MONTH(Payments!C$2:C)=MONTH($A$1),YEAR(Payments!C$2:C)=YEAR($A$1),DAY(Payments!C$2:C)=' + dayRef + ')),)';
+        contentCell.setFormula(formula);
 
         day++;
       } else {
