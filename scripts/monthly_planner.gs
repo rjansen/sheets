@@ -128,7 +128,7 @@ function buildPlanner(month, year) {
         contentCell.setWrap(true);
 
         var dayRef = numberCell.getA1Notation();
-        var formula = '=IFERROR(TEXTJOIN(CHAR(10),TRUE,FILTER(Payments!B$2:B&" - "&Payments!E$2:E,MONTH(Payments!C$2:C)=MONTH($A$1),YEAR(Payments!C$2:C)=YEAR($A$1),DAY(Payments!C$2:C)=' + dayRef + ')),)';
+        var formula = '=IFERROR(TEXTJOIN(CHAR(10),TRUE,FILTER(IF(Payments!D$2:D<>"","✅ ","❌ ")&Payments!B$2:B&" - "&Payments!E$2:E,MONTH(Payments!C$2:C)=MONTH($A$1),YEAR(Payments!C$2:C)=YEAR($A$1),DAY(Payments!C$2:C)=' + dayRef + ')),)';
         contentCell.setFormula(formula);
 
         day++;
@@ -185,7 +185,7 @@ function buildPlanner(month, year) {
 
   // -- Column widths --
   for (var col = 1; col <= numCols; col++) {
-    sheet.setColumnWidth(col, 156);
+    sheet.setColumnWidth(col, 195);
   }
 
   // Activate the new sheet
