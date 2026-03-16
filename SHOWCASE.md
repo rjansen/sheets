@@ -8,6 +8,10 @@ Color-coded monthly planner with goals section. Run `createMonthlyPlanner()` —
 Example below uses **March 2026** (starts on Sunday, so the first weekday cells are empty).
 Weekend columns (Sat/Sun) shown with `:` borders to indicate distinct background.
 
+Content cells contain **live formulas** that pull records from a "Payments" sheet (if it exists).
+Each cell filters by `due_date` matching the cell's day + title month/year, displaying `label - value`.
+Multiple items per day stack vertically via `CHAR(10)` newlines.
+
 ```
 +------------+------------+------------+------------+------------+------------+------------+
 |                                        March 2026                                        |
@@ -19,19 +23,19 @@ Weekend columns (Sat/Sun) shown with `:` borders to indicate distinct background
 |            |            |            |            |            :            :            :
 +------------+------------+------------+------------+------------+------------+------------+
 |     3      |     4      |     5      |     6      |     7      :     8      :     9      :
-|            |            |            |            |            :            :            :
-|            |            |            |            |            :            :            :
+|            |Rent - 1200 |Electric -  |            |            :            :            :
+|            |            |180         |            |            :            :            :
 +------------+------------+------------+------------+------------+------------+------------+
 |    10      |    11      |    12      |    13      |    14      :    15      :    16      :
-|            |            |            |            |            :            :            :
-|            |            |            |            |            :            :            :
+|Internet -  |            |            |            |            :Gym - 49.90 :            :
+|89.90       |            |            |            |            :Spotify - 19:            :
 +------------+------------+------------+------------+------------+------------+------------+
 |    17      |    18      |    19      |    20      |    21      :    22      :    23      :
-|            |            |            |            |            :            :            :
-|            |            |            |            |            :            :            :
+|            |            |            |Insurance - |            :            :            :
+|            |            |            |450         |            :            :            :
 +------------+------------+------------+------------+------------+------------+------------+
 |    24      |    25      |    26      |    27      |    28      :    29      :    30      :
-|            |            |            |            |            :            :            :
+|            |            |            |            |Phone - 65  :            :            :
 |            |            |            |            |            :            :            :
 +------------+------------+------------+------------+------------+------------+------------+
 |    31      |            |            |            |            :            :            :
@@ -62,6 +66,7 @@ Weekend columns (Sat/Sun) shown with `:` borders to indicate distinct background
 |--------|---------|
 | `\|  ...  \|` | Weekday cells |
 | `:  ...  :` | Weekend cells |
+| `Rent - 1200` | Live formula result: `label - value` from Payments sheet |
 | `[x]` / `[ ]` | Interactive checkbox in column 1, text area merged across columns 2–7 |
 
 **Color palette:**

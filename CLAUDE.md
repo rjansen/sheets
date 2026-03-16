@@ -9,6 +9,7 @@ Google Apps Script project generating monthly planner and calendar templates in 
 - `scripts/monthly_planner.gs` — monthly planner template
   - `createMonthlyPlanner()` — entry point: prompts for month/year, calls `buildPlanner()`
   - `buildPlanner(month, year)` — builds a color-coded monthly planner with goals section
+  - Content cells contain live formulas referencing a **"Payments"** sheet (columns: id, label, due_date, payment_date, value, payment_value). If the sheet doesn't exist, cells show empty via IFERROR.
 - `scripts/blank_calendar.gs` — blank printable calendar template
   - `createBlankCalendar()` — builds a grayscale blank calendar for printing (no prompts)
 - `SHOWCASE.md` — ASCII art previews of each template's output with color palettes and legends
