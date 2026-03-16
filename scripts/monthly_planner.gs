@@ -8,6 +8,9 @@
  * 4. Run createMonthlyPlanner() — it will prompt for month and year
  *
  * See also: blank_calendar.gs for a printable blank calendar template
+ *
+ * Run createPaymentsSheet() to bootstrap the "Payments" sheet with headers,
+ * an ARRAYFORMULA label column, and sample data.
  */
 
 function createMonthlyPlanner() {
@@ -31,6 +34,7 @@ function createMonthlyPlanner() {
 
 function buildPlanner(month, year) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
+
   var monthNames = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
@@ -125,10 +129,10 @@ function buildPlanner(month, year) {
         contentCell.setVerticalAlignment("top");
         contentCell.setFontSize(9);
         contentCell.setBackground(bg);
-        contentCell.setWrap(true);
+        contentCell.setWrapStrategy(SpreadsheetApp.WrapStrategy.CLIP);
 
         var dayRef = numberCell.getA1Notation();
-        var formula = '=IFERROR(TEXTJOIN(CHAR(10),TRUE,FILTER(IF(Payments!D$2:D<>"","✅ ","❌ ")&Payments!B$2:B&" - "&Payments!E$2:E,MONTH(Payments!C$2:C)=MONTH($A$1),YEAR(Payments!C$2:C)=YEAR($A$1),DAY(Payments!C$2:C)=' + dayRef + ')),)';
+        var formula = '=IFERROR(TEXTJOIN(CHAR(10),TRUE,FILTER(Payments!B$2:B,MONTH(Payments!D$2:D)=MONTH($A$1),YEAR(Payments!D$2:D)=YEAR($A$1),DAY(Payments!D$2:D)=' + dayRef + ')),)';
         contentCell.setFormula(formula);
 
         day++;
@@ -171,8 +175,15 @@ function buildPlanner(month, year) {
       .setVerticalAlignment("middle")
       .setBackground(goalsBg);
 
-    // Goal text area spanning columns 2-7
-    sheet.getRange(goalRow, 2, 1, numCols - 1).merge()
+    // Goal label (columns 2-3)
+    sheet.getRange(goalRow, 2, 1, 2).merge()
+      .setValue("")
+      .setBackground(goalsBg)
+      .setVerticalAlignment("middle")
+      .setFontSize(11);
+
+    // Goal description (columns 4-7)
+    sheet.getRange(goalRow, 4, 1, 4).merge()
       .setValue("")
       .setBackground(goalsBg)
       .setVerticalAlignment("middle")
@@ -185,10 +196,69 @@ function buildPlanner(month, year) {
 
   // -- Column widths --
   for (var col = 1; col <= numCols; col++) {
-    sheet.setColumnWidth(col, 195);
+    sheet.setColumnWidth(col, 199);
   }
 
   // Activate the new sheet
   ss.setActiveSheet(sheet);
   SpreadsheetApp.getUi().alert("Planner created: " + sheetName);
+}
+
+function createPaymentsSheet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  // Create or clear the sheet
+  var sheet = ss.getSheetByName("Payments");
+  if (sheet) {
+    sheet.clear();
+    sheet.clearFormats();
+    sheet.getDataRange().clearDataValidations();
+  } else {
+    sheet = ss.insertSheet("Payments");
+  }
+
+  // Headers
+  var headers = ["id", "label", "description", "due_date", "payment_date", "value", "payment_value"];
+  var headerRange = sheet.getRange(1, 1, 1, headers.length);
+  headerRange.setValues([headers]);
+  headerRange.setFontWeight("bold");
+
+  // Sample data (skip column B — filled by ARRAYFORMULA)
+  var sampleData = [
+    [1, "", "Rent",     new Date(2026, 2, 4), new Date(2026, 2, 4), 1200.00, 1200.00],
+    [2, "", "Electric", new Date(2026, 2, 5), "",                   180.00,  ""],
+    [3, "", "Internet", new Date(2026, 2, 10), new Date(2026, 2, 10), 89.90, 89.90]
+  ];
+  sheet.getRange(2, 1, sampleData.length, headers.length).setValues(sampleData);
+
+  // ARRAYFORMULA in B2 — set after data so setValues doesn't overwrite it
+  sheet.getRange("B2").setFormula(
+    '=ARRAYFORMULA(IF(C2:C="","",IF(E2:E<>"","✅ ","❌ ")&TEXT(F2:F,"0.00")&" - "&C2:C))'
+  );
+
+  // Format date columns (D, E) as yyyy-mm-dd
+  sheet.getRange(2, 4, sampleData.length, 2).setNumberFormat("yyyy-mm-dd");
+
+  // Format value columns (F, G) as 0.00
+  sheet.getRange(2, 6, sampleData.length, 2).setNumberFormat("0.00");
+
+  // Re-link formulas in other sheets that reference "Payments" —
+  // needed when the Payments sheet was deleted and recreated (new sheet ID)
+  var sheets = ss.getSheets();
+  for (var s = 0; s < sheets.length; s++) {
+    var other = sheets[s];
+    if (other.getName() === "Payments") continue;
+    var dataRange = other.getDataRange();
+    var formulas = dataRange.getFormulas();
+    for (var r = 0; r < formulas.length; r++) {
+      for (var c = 0; c < formulas[r].length; c++) {
+        if (formulas[r][c].indexOf("Payments!") !== -1) {
+          dataRange.getCell(r + 1, c + 1).setFormula(formulas[r][c]);
+        }
+      }
+    }
+  }
+
+  ss.setActiveSheet(sheet);
+  SpreadsheetApp.getUi().alert("Payments sheet created with sample data.");
 }
